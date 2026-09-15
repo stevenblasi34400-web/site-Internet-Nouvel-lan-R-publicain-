@@ -1,24 +1,212 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { ArrowRight, BookOpen, Landmark, PenLine } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ProductCard } from "@/components/ProductCard";
+import { NewsletterForm } from "@/components/NewsletterForm";
+import { fetchProducts } from "@/lib/shopify";
+import { BLOG_POSTS } from "@/data/posts";
+import authorImg from "@/assets/author.jpg";
+import partiImg from "@/assets/parti.jpg";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Steven Blasi — Écrivain : livres, actualités et engagement" },
+      { name: "description", content: "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique. Achetez ses ouvrages en ligne, papier ou numérique." },
+      { property: "og:title", content: "Steven Blasi — Écrivain : livres, actualités et engagement" },
+      { property: "og:description", content: "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique." },
+      { property: "og:type", content: "website" },
+    ],
+  }),
+  component: HomePage,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function HomePage() {
+  const { data: products } = useQuery({
+    queryKey: ["shopify-products"],
+    queryFn: () => fetchProducts(20),
+    staleTime: 60_000,
+  });
+  const featured = products?.slice(0, 3) ?? [];
+  const posts = BLOG_POSTS.slice(0, 2);
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div>
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(60% 50% at 80% 20%, oklch(0.79 0.14 75 / 14%) 0%, transparent 70%)",
+          }}
+        />
+        <div className="container-site grid items-center gap-12 py-20 md:grid-cols-[1.2fr_1fr] md:py-28">
+          <div>
+            <p className="kicker animate-rise">Écrivain · Essayiste · Homme engagé</p>
+            <h1 className="heading-hero animate-rise-1 mt-5 text-5xl md:text-7xl">
+              Des livres qui <span className="text-primary italic">dérangent</span>, des idées qui <span className="text-primary italic">rassemblent</span>.
+            </h1>
+            <p className="animate-rise-2 mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
+              Bienvenue sur mon site officiel. Retrouvez tous mes ouvrages — en version
+              papier ou numérique —, suivez mon actualité, et découvrez le mouvement
+              politique que je porte.
+            </p>
+            <div className="animate-rise-3 mt-8 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link to="/livres">
+                  <BookOpen className="mr-2 h-4 w-4" />
+                  Découvrir mes livres
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/parti-politique">
+                  <Landmark className="mr-2 h-4 w-4" />
+                  Mon engagement politique
+                </Link>
+              </Button>
+            </div>
+          </div>
+          <div className="animate-rise-2 relative">
+            <div className="overflow-hidden rounded-2xl border shadow-2xl">
+              <img
+                src={authorImg}
+                alt="Steven Blasi à son bureau d'écriture"
+                width={896}
+                height={1152}
+                className="h-full w-full object-cover"
+              />
+            </div>
+            <div className="absolute -bottom-5 -left-5 rounded-xl border bg-card px-5 py-4 shadow-xl">
+              <p className="font-display text-2xl font-bold text-primary">Steven Blasi</p>
+              <p className="text-xs text-muted-foreground">Auteur &amp; fondateur de mouvement</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* LIVRES */}
+      <section className="border-t bg-card/30">
+        <div className="container-site py-16 md:py-20">
+          <div className="mb-10 flex items-end justify-between gap-4">
+            <div>
+              <p className="kicker">Bibliographie</p>
+              <h2 className="heading-hero mt-3 text-3xl md:text-4xl">Mes livres</h2>
+            </div>
+            <Button asChild variant="ghost">
+              <Link to="/livres" className="link-underline">
+                Tout voir <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+          {featured.length > 0 ? (
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {featured.map((p) => (
+                <ProductCard key={p.node.id} product={p} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed p-12 text-center">
+              <BookOpen className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+              <p className="text-muted-foreground">
+                La bibliothèque est en cours de remplissage — les livres arrivent très bientôt.
+              </p>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* PARTI POLITIQUE */}
+      <section className="relative overflow-hidden border-t">
+        <img
+          src={partiImg}
+          alt="Réunion publique du mouvement sur une place de village"
+          loading="lazy"
+          width={1536}
+          height={768}
+          className="absolute inset-0 h-full w-full object-cover opacity-25"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(90deg, var(--color-background) 20%, transparent 80%)" }}
+        />
+        <div className="container-site relative py-20 md:py-28">
+          <div className="max-w-xl">
+            <p className="kicker">Engagement</p>
+            <h2 className="heading-hero mt-3 text-3xl md:text-5xl">
+              Au-delà des livres : <span className="text-primary italic">un mouvement</span>
+            </h2>
+            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+              Écrire ne suffit pas. J'ai fondé un mouvement politique pour porter les idées
+              qui me tiennent à cœur et agir concrètement, avec celles et ceux qui veulent
+              changer les choses.
+            </p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Button asChild size="lg">
+                <Link to="/parti-politique">Découvrir le mouvement</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline">
+                <Link to="/parti-politique/rejoindre">Nous rejoindre</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ACTUALITÉS */}
+      <section className="border-t bg-card/30">
+        <div className="container-site py-16 md:py-20">
+          <div className="mb-10 flex items-end justify-between gap-4">
+            <div>
+              <p className="kicker">Journal</p>
+              <h2 className="heading-hero mt-3 text-3xl md:text-4xl">Dernières actualités</h2>
+            </div>
+            <Button asChild variant="ghost">
+              <Link to="/blog" className="link-underline">
+                Toutes les actualités <ArrowRight className="ml-1 h-4 w-4" />
+              </Link>
+            </Button>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
+            {posts.map((post) => (
+              <Link
+                key={post.slug}
+                to="/blog/$slug"
+                params={{ slug: post.slug }}
+                className="card-hover group rounded-xl border bg-card p-6"
+              >
+                <p className="kicker">{post.category}</p>
+                <h3 className="font-display mt-3 text-2xl leading-snug transition-colors group-hover:text-primary">
+                  {post.title}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{post.excerpt}</p>
+                <p className="mt-4 flex items-center gap-2 text-sm font-medium text-primary">
+                  <PenLine className="h-4 w-4" /> Lire l'article
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* NEWSLETTER */}
+      <section className="border-t">
+        <div className="container-site py-16 text-center md:py-20">
+          <p className="kicker">Restons en contact</p>
+          <h2 className="heading-hero mx-auto mt-3 max-w-2xl text-3xl md:text-4xl">
+            Recevez mes nouveautés avant tout le monde
+          </h2>
+          <p className="mx-auto mt-4 max-w-md text-muted-foreground">
+            Nouveaux livres, extraits exclusifs, dédicaces et actualités du mouvement.
+          </p>
+          <div className="mt-8">
+            <NewsletterForm />
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
