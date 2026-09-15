@@ -10,33 +10,161 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AProposRouteImport } from './routes/a-propos'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as LivresRouteImport } from './routes/livres'
+import { Route as PartiPolitiqueRouteImport } from './routes/parti-politique'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as LivreHandleRouteImport } from './routes/livre.$handle'
+import { Route as PartiPolitiqueIndexRouteImport } from './routes/parti-politique.index'
+import { Route as PartiPolitiqueProgrammeRouteImport } from './routes/parti-politique.programme'
+import { Route as PartiPolitiqueRejoindreRouteImport } from './routes/parti-politique.rejoindre'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AProposRoute = AProposRouteImport.update({
+  id: '/a-propos',
+  path: '/a-propos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LivresRoute = LivresRouteImport.update({
+  id: '/livres',
+  path: '/livres',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartiPolitiqueRoute = PartiPolitiqueRouteImport.update({
+  id: '/parti-politique',
+  path: '/parti-politique',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
+const LivreHandleRoute = LivreHandleRouteImport.update({
+  id: '/livre/$handle',
+  path: '/livre/$handle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartiPolitiqueIndexRoute = PartiPolitiqueIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PartiPolitiqueRoute,
+} as any)
+const PartiPolitiqueProgrammeRoute = PartiPolitiqueProgrammeRouteImport.update({
+  id: '/programme',
+  path: '/programme',
+  getParentRoute: () => PartiPolitiqueRoute,
+} as any)
+const PartiPolitiqueRejoindreRoute = PartiPolitiqueRejoindreRouteImport.update({
+  id: '/rejoindre',
+  path: '/rejoindre',
+  getParentRoute: () => PartiPolitiqueRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/livres': typeof LivresRoute
+  '/parti-politique': typeof PartiPolitiqueRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
+  '/livre/$handle': typeof LivreHandleRoute
+  '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
+  '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
+  '/parti-politique/': typeof PartiPolitiqueIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/livres': typeof LivresRoute
+  '/blog/$slug': typeof BlogSlugRoute
+  '/livre/$handle': typeof LivreHandleRoute
+  '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
+  '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
+  '/parti-politique': typeof PartiPolitiqueIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/a-propos': typeof AProposRoute
+  '/blog': typeof BlogRouteWithChildren
+  '/contact': typeof ContactRoute
+  '/livres': typeof LivresRoute
+  '/parti-politique': typeof PartiPolitiqueRouteWithChildren
+  '/blog/$slug': typeof BlogSlugRoute
+  '/livre/$handle': typeof LivreHandleRoute
+  '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
+  '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
+  '/parti-politique/': typeof PartiPolitiqueIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/a-propos'
+    | '/blog'
+    | '/contact'
+    | '/livres'
+    | '/parti-politique'
+    | '/blog/$slug'
+    | '/livre/$handle'
+    | '/parti-politique/programme'
+    | '/parti-politique/rejoindre'
+    | '/parti-politique/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/a-propos'
+    | '/blog'
+    | '/contact'
+    | '/livres'
+    | '/blog/$slug'
+    | '/livre/$handle'
+    | '/parti-politique/programme'
+    | '/parti-politique/rejoindre'
+    | '/parti-politique'
+  id:
+    | '__root__'
+    | '/'
+    | '/a-propos'
+    | '/blog'
+    | '/contact'
+    | '/livres'
+    | '/parti-politique'
+    | '/blog/$slug'
+    | '/livre/$handle'
+    | '/parti-politique/programme'
+    | '/parti-politique/rejoindre'
+    | '/parti-politique/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AProposRoute: typeof AProposRoute
+  BlogRoute: typeof BlogRouteWithChildren
+  ContactRoute: typeof ContactRoute
+  LivresRoute: typeof LivresRoute
+  PartiPolitiqueRoute: typeof PartiPolitiqueRouteWithChildren
+  LivreHandleRoute: typeof LivreHandleRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +176,113 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/a-propos': {
+      id: '/a-propos'
+      path: '/a-propos'
+      fullPath: '/a-propos'
+      preLoaderRoute: typeof AProposRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/livres': {
+      id: '/livres'
+      path: '/livres'
+      fullPath: '/livres'
+      preLoaderRoute: typeof LivresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parti-politique': {
+      id: '/parti-politique'
+      path: '/parti-politique'
+      fullPath: '/parti-politique'
+      preLoaderRoute: typeof PartiPolitiqueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/livre/$handle': {
+      id: '/livre/$handle'
+      path: '/livre/$handle'
+      fullPath: '/livre/$handle'
+      preLoaderRoute: typeof LivreHandleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/parti-politique/': {
+      id: '/parti-politique/'
+      path: '/'
+      fullPath: '/parti-politique/'
+      preLoaderRoute: typeof PartiPolitiqueIndexRouteImport
+      parentRoute: typeof PartiPolitiqueRoute
+    }
+    '/parti-politique/programme': {
+      id: '/parti-politique/programme'
+      path: '/programme'
+      fullPath: '/parti-politique/programme'
+      preLoaderRoute: typeof PartiPolitiqueProgrammeRouteImport
+      parentRoute: typeof PartiPolitiqueRoute
+    }
+    '/parti-politique/rejoindre': {
+      id: '/parti-politique/rejoindre'
+      path: '/rejoindre'
+      fullPath: '/parti-politique/rejoindre'
+      preLoaderRoute: typeof PartiPolitiqueRejoindreRouteImport
+      parentRoute: typeof PartiPolitiqueRoute
+    }
   }
 }
 
+interface BlogRouteChildren {
+  BlogSlugRoute: typeof BlogSlugRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogSlugRoute: BlogSlugRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface PartiPolitiqueRouteChildren {
+  PartiPolitiqueProgrammeRoute: typeof PartiPolitiqueProgrammeRoute
+  PartiPolitiqueRejoindreRoute: typeof PartiPolitiqueRejoindreRoute
+  PartiPolitiqueIndexRoute: typeof PartiPolitiqueIndexRoute
+}
+
+const PartiPolitiqueRouteChildren: PartiPolitiqueRouteChildren = {
+  PartiPolitiqueProgrammeRoute: PartiPolitiqueProgrammeRoute,
+  PartiPolitiqueRejoindreRoute: PartiPolitiqueRejoindreRoute,
+  PartiPolitiqueIndexRoute: PartiPolitiqueIndexRoute,
+}
+
+const PartiPolitiqueRouteWithChildren = PartiPolitiqueRoute._addFileChildren(
+  PartiPolitiqueRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AProposRoute: AProposRoute,
+  BlogRoute: BlogRouteWithChildren,
+  ContactRoute: ContactRoute,
+  LivresRoute: LivresRoute,
+  PartiPolitiqueRoute: PartiPolitiqueRouteWithChildren,
+  LivreHandleRoute: LivreHandleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
