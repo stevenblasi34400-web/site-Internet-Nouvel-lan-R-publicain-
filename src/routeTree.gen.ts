@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/_admin'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -20,10 +21,26 @@ import { Route as LivreHandleRouteImport } from './routes/livre.$handle'
 import { Route as PartiPolitiqueIndexRouteImport } from './routes/parti-politique.index'
 import { Route as PartiPolitiqueProgrammeRouteImport } from './routes/parti-politique.programme'
 import { Route as PartiPolitiqueRejoindreRouteImport } from './routes/parti-politique.rejoindre'
+import { Route as AdminAdminIndexRouteImport } from './routes/_admin/admin/index'
+import { Route as AdminAdminAccueilRouteImport } from './routes/_admin/admin/accueil'
+import { Route as AdminAdminLoginRouteImport } from './routes/_admin/admin/login'
+import { Route as AdminAdminReglagesRouteImport } from './routes/_admin/admin/reglages'
+import { Route as AdminAdminArticlesIndexRouteImport } from './routes/_admin/admin/articles/index'
+import { Route as AdminAdminArticlesNouveauRouteImport } from './routes/_admin/admin/articles/nouveau'
+import { Route as AdminAdminLivresIndexRouteImport } from './routes/_admin/admin/livres/index'
+import { Route as AdminAdminLivresNouveauRouteImport } from './routes/_admin/admin/livres/nouveau'
+import { Route as AdminAdminPagesIndexRouteImport } from './routes/_admin/admin/pages/index'
+import { Route as AdminAdminPagesPageIdRouteImport } from './routes/_admin/admin/pages/$pageId'
+import { Route as AdminAdminArticlesSlugEditRouteImport } from './routes/_admin/admin/articles/$slug/edit'
+import { Route as AdminAdminLivresIdEditRouteImport } from './routes/_admin/admin/livres/$id/edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/_admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AProposRoute = AProposRouteImport.update({
@@ -76,6 +93,68 @@ const PartiPolitiqueRejoindreRoute = PartiPolitiqueRejoindreRouteImport.update({
   path: '/rejoindre',
   getParentRoute: () => PartiPolitiqueRoute,
 } as any)
+const AdminAdminIndexRoute = AdminAdminIndexRouteImport.update({
+  id: '/admin/',
+  path: '/admin/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminAccueilRoute = AdminAdminAccueilRouteImport.update({
+  id: '/admin/accueil',
+  path: '/admin/accueil',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminLoginRoute = AdminAdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminReglagesRoute = AdminAdminReglagesRouteImport.update({
+  id: '/admin/reglages',
+  path: '/admin/reglages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminArticlesIndexRoute = AdminAdminArticlesIndexRouteImport.update({
+  id: '/admin/articles/',
+  path: '/admin/articles/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminArticlesNouveauRoute =
+  AdminAdminArticlesNouveauRouteImport.update({
+    id: '/admin/articles/nouveau',
+    path: '/admin/articles/nouveau',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminAdminLivresIndexRoute = AdminAdminLivresIndexRouteImport.update({
+  id: '/admin/livres/',
+  path: '/admin/livres/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminLivresNouveauRoute = AdminAdminLivresNouveauRouteImport.update({
+  id: '/admin/livres/nouveau',
+  path: '/admin/livres/nouveau',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminPagesIndexRoute = AdminAdminPagesIndexRouteImport.update({
+  id: '/admin/pages/',
+  path: '/admin/pages/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminPagesPageIdRoute = AdminAdminPagesPageIdRouteImport.update({
+  id: '/admin/pages/$pageId',
+  path: '/admin/pages/$pageId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAdminArticlesSlugEditRoute =
+  AdminAdminArticlesSlugEditRouteImport.update({
+    id: '/admin/articles/$slug/edit',
+    path: '/admin/articles/$slug/edit',
+    getParentRoute: () => AdminRoute,
+  } as any)
+const AdminAdminLivresIdEditRoute = AdminAdminLivresIdEditRouteImport.update({
+  id: '/admin/livres/$id/edit',
+  path: '/admin/livres/$id/edit',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +168,18 @@ export interface FileRoutesByFullPath {
   '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
   '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
   '/parti-politique/': typeof PartiPolitiqueIndexRoute
+  '/admin/accueil': typeof AdminAdminAccueilRoute
+  '/admin/login': typeof AdminAdminLoginRoute
+  '/admin/reglages': typeof AdminAdminReglagesRoute
+  '/admin/': typeof AdminAdminIndexRoute
+  '/admin/articles/nouveau': typeof AdminAdminArticlesNouveauRoute
+  '/admin/livres/nouveau': typeof AdminAdminLivresNouveauRoute
+  '/admin/pages/$pageId': typeof AdminAdminPagesPageIdRoute
+  '/admin/articles/': typeof AdminAdminArticlesIndexRoute
+  '/admin/livres/': typeof AdminAdminLivresIndexRoute
+  '/admin/pages/': typeof AdminAdminPagesIndexRoute
+  '/admin/articles/$slug/edit': typeof AdminAdminArticlesSlugEditRoute
+  '/admin/livres/$id/edit': typeof AdminAdminLivresIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -101,10 +192,23 @@ export interface FileRoutesByTo {
   '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
   '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
   '/parti-politique': typeof PartiPolitiqueIndexRoute
+  '/admin/accueil': typeof AdminAdminAccueilRoute
+  '/admin/login': typeof AdminAdminLoginRoute
+  '/admin/reglages': typeof AdminAdminReglagesRoute
+  '/admin': typeof AdminAdminIndexRoute
+  '/admin/articles/nouveau': typeof AdminAdminArticlesNouveauRoute
+  '/admin/livres/nouveau': typeof AdminAdminLivresNouveauRoute
+  '/admin/pages/$pageId': typeof AdminAdminPagesPageIdRoute
+  '/admin/articles': typeof AdminAdminArticlesIndexRoute
+  '/admin/livres': typeof AdminAdminLivresIndexRoute
+  '/admin/pages': typeof AdminAdminPagesIndexRoute
+  '/admin/articles/$slug/edit': typeof AdminAdminArticlesSlugEditRoute
+  '/admin/livres/$id/edit': typeof AdminAdminLivresIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_admin': typeof AdminRouteWithChildren
   '/a-propos': typeof AProposRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
@@ -115,6 +219,18 @@ export interface FileRoutesById {
   '/parti-politique/programme': typeof PartiPolitiqueProgrammeRoute
   '/parti-politique/rejoindre': typeof PartiPolitiqueRejoindreRoute
   '/parti-politique/': typeof PartiPolitiqueIndexRoute
+  '/_admin/admin/accueil': typeof AdminAdminAccueilRoute
+  '/_admin/admin/login': typeof AdminAdminLoginRoute
+  '/_admin/admin/reglages': typeof AdminAdminReglagesRoute
+  '/_admin/admin/': typeof AdminAdminIndexRoute
+  '/_admin/admin/articles/nouveau': typeof AdminAdminArticlesNouveauRoute
+  '/_admin/admin/livres/nouveau': typeof AdminAdminLivresNouveauRoute
+  '/_admin/admin/pages/$pageId': typeof AdminAdminPagesPageIdRoute
+  '/_admin/admin/articles/': typeof AdminAdminArticlesIndexRoute
+  '/_admin/admin/livres/': typeof AdminAdminLivresIndexRoute
+  '/_admin/admin/pages/': typeof AdminAdminPagesIndexRoute
+  '/_admin/admin/articles/$slug/edit': typeof AdminAdminArticlesSlugEditRoute
+  '/_admin/admin/livres/$id/edit': typeof AdminAdminLivresIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -130,6 +246,18 @@ export interface FileRouteTypes {
     | '/parti-politique/programme'
     | '/parti-politique/rejoindre'
     | '/parti-politique/'
+    | '/admin/accueil'
+    | '/admin/login'
+    | '/admin/reglages'
+    | '/admin/'
+    | '/admin/articles/nouveau'
+    | '/admin/livres/nouveau'
+    | '/admin/pages/$pageId'
+    | '/admin/articles/'
+    | '/admin/livres/'
+    | '/admin/pages/'
+    | '/admin/articles/$slug/edit'
+    | '/admin/livres/$id/edit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,9 +270,22 @@ export interface FileRouteTypes {
     | '/parti-politique/programme'
     | '/parti-politique/rejoindre'
     | '/parti-politique'
+    | '/admin/accueil'
+    | '/admin/login'
+    | '/admin/reglages'
+    | '/admin'
+    | '/admin/articles/nouveau'
+    | '/admin/livres/nouveau'
+    | '/admin/pages/$pageId'
+    | '/admin/articles'
+    | '/admin/livres'
+    | '/admin/pages'
+    | '/admin/articles/$slug/edit'
+    | '/admin/livres/$id/edit'
   id:
     | '__root__'
     | '/'
+    | '/_admin'
     | '/a-propos'
     | '/blog'
     | '/contact'
@@ -155,10 +296,23 @@ export interface FileRouteTypes {
     | '/parti-politique/programme'
     | '/parti-politique/rejoindre'
     | '/parti-politique/'
+    | '/_admin/admin/accueil'
+    | '/_admin/admin/login'
+    | '/_admin/admin/reglages'
+    | '/_admin/admin/'
+    | '/_admin/admin/articles/nouveau'
+    | '/_admin/admin/livres/nouveau'
+    | '/_admin/admin/pages/$pageId'
+    | '/_admin/admin/articles/'
+    | '/_admin/admin/livres/'
+    | '/_admin/admin/pages/'
+    | '/_admin/admin/articles/$slug/edit'
+    | '/_admin/admin/livres/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AProposRoute: typeof AProposRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
@@ -174,6 +328,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_admin': {
+      id: '/_admin'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/a-propos': {
@@ -246,8 +407,124 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartiPolitiqueRejoindreRouteImport
       parentRoute: typeof PartiPolitiqueRoute
     }
+    '/_admin/admin/': {
+      id: '/_admin/admin/'
+      path: '/admin'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminAdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/accueil': {
+      id: '/_admin/admin/accueil'
+      path: '/admin/accueil'
+      fullPath: '/admin/accueil'
+      preLoaderRoute: typeof AdminAdminAccueilRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/login': {
+      id: '/_admin/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminAdminLoginRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/reglages': {
+      id: '/_admin/admin/reglages'
+      path: '/admin/reglages'
+      fullPath: '/admin/reglages'
+      preLoaderRoute: typeof AdminAdminReglagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/articles/': {
+      id: '/_admin/admin/articles/'
+      path: '/admin/articles'
+      fullPath: '/admin/articles/'
+      preLoaderRoute: typeof AdminAdminArticlesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/articles/nouveau': {
+      id: '/_admin/admin/articles/nouveau'
+      path: '/admin/articles/nouveau'
+      fullPath: '/admin/articles/nouveau'
+      preLoaderRoute: typeof AdminAdminArticlesNouveauRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/livres/': {
+      id: '/_admin/admin/livres/'
+      path: '/admin/livres'
+      fullPath: '/admin/livres/'
+      preLoaderRoute: typeof AdminAdminLivresIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/livres/nouveau': {
+      id: '/_admin/admin/livres/nouveau'
+      path: '/admin/livres/nouveau'
+      fullPath: '/admin/livres/nouveau'
+      preLoaderRoute: typeof AdminAdminLivresNouveauRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/pages/': {
+      id: '/_admin/admin/pages/'
+      path: '/admin/pages'
+      fullPath: '/admin/pages/'
+      preLoaderRoute: typeof AdminAdminPagesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/pages/$pageId': {
+      id: '/_admin/admin/pages/$pageId'
+      path: '/admin/pages/$pageId'
+      fullPath: '/admin/pages/$pageId'
+      preLoaderRoute: typeof AdminAdminPagesPageIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/articles/$slug/edit': {
+      id: '/_admin/admin/articles/$slug/edit'
+      path: '/admin/articles/$slug/edit'
+      fullPath: '/admin/articles/$slug/edit'
+      preLoaderRoute: typeof AdminAdminArticlesSlugEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/_admin/admin/livres/$id/edit': {
+      id: '/_admin/admin/livres/$id/edit'
+      path: '/admin/livres/$id/edit'
+      fullPath: '/admin/livres/$id/edit'
+      preLoaderRoute: typeof AdminAdminLivresIdEditRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminAdminAccueilRoute: typeof AdminAdminAccueilRoute
+  AdminAdminLoginRoute: typeof AdminAdminLoginRoute
+  AdminAdminReglagesRoute: typeof AdminAdminReglagesRoute
+  AdminAdminIndexRoute: typeof AdminAdminIndexRoute
+  AdminAdminArticlesNouveauRoute: typeof AdminAdminArticlesNouveauRoute
+  AdminAdminLivresNouveauRoute: typeof AdminAdminLivresNouveauRoute
+  AdminAdminPagesPageIdRoute: typeof AdminAdminPagesPageIdRoute
+  AdminAdminArticlesIndexRoute: typeof AdminAdminArticlesIndexRoute
+  AdminAdminLivresIndexRoute: typeof AdminAdminLivresIndexRoute
+  AdminAdminPagesIndexRoute: typeof AdminAdminPagesIndexRoute
+  AdminAdminArticlesSlugEditRoute: typeof AdminAdminArticlesSlugEditRoute
+  AdminAdminLivresIdEditRoute: typeof AdminAdminLivresIdEditRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminAdminAccueilRoute: AdminAdminAccueilRoute,
+  AdminAdminLoginRoute: AdminAdminLoginRoute,
+  AdminAdminReglagesRoute: AdminAdminReglagesRoute,
+  AdminAdminIndexRoute: AdminAdminIndexRoute,
+  AdminAdminArticlesNouveauRoute: AdminAdminArticlesNouveauRoute,
+  AdminAdminLivresNouveauRoute: AdminAdminLivresNouveauRoute,
+  AdminAdminPagesPageIdRoute: AdminAdminPagesPageIdRoute,
+  AdminAdminArticlesIndexRoute: AdminAdminArticlesIndexRoute,
+  AdminAdminLivresIndexRoute: AdminAdminLivresIndexRoute,
+  AdminAdminPagesIndexRoute: AdminAdminPagesIndexRoute,
+  AdminAdminArticlesSlugEditRoute: AdminAdminArticlesSlugEditRoute,
+  AdminAdminLivresIdEditRoute: AdminAdminLivresIdEditRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
@@ -277,6 +554,7 @@ const PartiPolitiqueRouteWithChildren = PartiPolitiqueRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AProposRoute: AProposRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,

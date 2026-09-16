@@ -6,16 +6,46 @@ import { ProductCard } from "@/components/ProductCard";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { fetchProducts } from "@/lib/shopify";
 import { BLOG_POSTS } from "@/data/posts";
+import { useHomePage } from "@/hooks/useContent";
 import authorImg from "@/assets/author.jpg";
 import partiImg from "@/assets/parti.jpg";
+
+const FALLBACK_HOME = {
+  heroKicker: "Écrivain · Essayiste · Homme engagé",
+  heroTitle: "Des livres qui dérangent, des idées qui rassemblent.",
+  heroText:
+    "Bienvenue sur mon site officiel. Retrouvez tous mes ouvrages — en version papier ou numérique —, suivez mon actualité, et découvrez le mouvement politique que je porte.",
+  heroCtaPrimaryLabel: "Découvrir mes livres",
+  heroCtaPrimaryTo: "/livres",
+  heroCtaSecondaryLabel: "Mon engagement politique",
+  heroCtaSecondaryTo: "/parti-politique",
+  movementKicker: "Engagement",
+  movementTitle: "Au-delà des livres : un mouvement",
+  movementText:
+    "Écrire ne suffit pas. J'ai fondé un mouvement politique pour porter les idées qui me tiennent à cœur et agir concrètement, avec celles et ceux qui veulent changer les choses.",
+  newsletterKicker: "Restons en contact",
+  newsletterTitle: "Recevez mes nouveautés avant tout le monde",
+  newsletterText: "Nouveaux livres, extraits exclusifs, dédicaces et actualités du mouvement.",
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Steven Blasi — Écrivain : livres, actualités et engagement" },
-      { name: "description", content: "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique. Achetez ses ouvrages en ligne, papier ou numérique." },
-      { property: "og:title", content: "Steven Blasi — Écrivain : livres, actualités et engagement" },
-      { property: "og:description", content: "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique." },
+      {
+        name: "description",
+        content:
+          "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique. Achetez ses ouvrages en ligne, papier ou numérique.",
+      },
+      {
+        property: "og:title",
+        content: "Steven Blasi — Écrivain : livres, actualités et engagement",
+      },
+      {
+        property: "og:description",
+        content:
+          "Découvrez les livres de Steven Blasi, ses actualités, et son mouvement politique.",
+      },
       { property: "og:type", content: "website" },
     ],
   }),
@@ -28,6 +58,7 @@ function HomePage() {
     queryFn: () => fetchProducts(20),
     staleTime: 60_000,
   });
+  const home = useHomePage(FALLBACK_HOME).data ?? FALLBACK_HOME;
   const featured = products?.slice(0, 3) ?? [];
   const posts = BLOG_POSTS.slice(0, 2);
 
@@ -45,26 +76,24 @@ function HomePage() {
         />
         <div className="container-site grid items-center gap-12 py-20 md:grid-cols-[1.2fr_1fr] md:py-28">
           <div>
-            <p className="kicker animate-rise">Écrivain · Essayiste · Homme engagé</p>
+            <p className="kicker animate-rise">{home.heroKicker}</p>
             <h1 className="heading-hero animate-rise-1 mt-5 text-5xl md:text-7xl">
-              Des livres qui <span className="text-primary italic">dérangent</span>, des idées qui <span className="text-primary italic">rassemblent</span>.
+              {home.heroTitle}
             </h1>
             <p className="animate-rise-2 mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              Bienvenue sur mon site officiel. Retrouvez tous mes ouvrages — en version
-              papier ou numérique —, suivez mon actualité, et découvrez le mouvement
-              politique que je porte.
+              {home.heroText}
             </p>
             <div className="animate-rise-3 mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
-                <Link to="/livres">
+                <Link to={home.heroCtaPrimaryTo}>
                   <BookOpen className="mr-2 h-4 w-4" />
-                  Découvrir mes livres
+                  {home.heroCtaPrimaryLabel}
                 </Link>
               </Button>
               <Button asChild size="lg" variant="outline">
-                <Link to="/parti-politique">
+                <Link to={home.heroCtaSecondaryTo}>
                   <Landmark className="mr-2 h-4 w-4" />
-                  Mon engagement politique
+                  {home.heroCtaSecondaryLabel}
                 </Link>
               </Button>
             </div>
@@ -131,18 +160,16 @@ function HomePage() {
         <div
           aria-hidden
           className="absolute inset-0"
-          style={{ background: "linear-gradient(90deg, var(--color-background) 20%, transparent 80%)" }}
+          style={{
+            background: "linear-gradient(90deg, var(--color-background) 20%, transparent 80%)",
+          }}
         />
         <div className="container-site relative py-20 md:py-28">
           <div className="max-w-xl">
-            <p className="kicker">Engagement</p>
-            <h2 className="heading-hero mt-3 text-3xl md:text-5xl">
-              Au-delà des livres : <span className="text-primary italic">un mouvement</span>
-            </h2>
+            <p className="kicker">{home.movementKicker}</p>
+            <h2 className="heading-hero mt-3 text-3xl md:text-5xl">{home.movementTitle}</h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Écrire ne suffit pas. J'ai fondé un mouvement politique pour porter les idées
-              qui me tiennent à cœur et agir concrètement, avec celles et ceux qui veulent
-              changer les choses.
+              {home.movementText}
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Button asChild size="lg">
@@ -195,13 +222,11 @@ function HomePage() {
       {/* NEWSLETTER */}
       <section className="border-t">
         <div className="container-site py-16 text-center md:py-20">
-          <p className="kicker">Restons en contact</p>
+          <p className="kicker">{home.newsletterKicker}</p>
           <h2 className="heading-hero mx-auto mt-3 max-w-2xl text-3xl md:text-4xl">
-            Recevez mes nouveautés avant tout le monde
+            {home.newsletterTitle}
           </h2>
-          <p className="mx-auto mt-4 max-w-md text-muted-foreground">
-            Nouveaux livres, extraits exclusifs, dédicaces et actualités du mouvement.
-          </p>
+          <p className="mx-auto mt-4 max-w-md text-muted-foreground">{home.newsletterText}</p>
           <div className="mt-8">
             <NewsletterForm />
           </div>

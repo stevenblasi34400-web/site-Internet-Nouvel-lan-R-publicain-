@@ -1,14 +1,38 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { GraduationCap, HeartHandshake, Leaf, ShieldCheck, Store, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useContentPage } from "@/hooks/useContent";
+
+const FALLBACK = {
+  id: "parti-politique/programme",
+  title: "Le programme",
+  intro:
+    "Six grandes orientations guident notre action. Le programme détaillé, mesure par mesure, sera publié ici — voici déjà les fondations.",
+  body: [
+    "Éducation & jeunesse : remettre l'école au centre.",
+    "Santé & solidarité : un accès aux soins garanti partout.",
+    "Économie locale : soutenir commerces, artisans et territoires ruraux.",
+    "Transition écologique : une écologie pragmatique qui crée de l'emploi local.",
+    "Sécurité & justice : restaurer l'autorité de l'État avec une justice équitable.",
+    "Démocratie & transparence : des élus redevables et des citoyens consultés.",
+  ],
+};
 
 export const Route = createFileRoute("/parti-politique/programme")({
   head: () => ({
     meta: [
       { title: "Programme du mouvement — Steven Blasi" },
-      { name: "description", content: "Le programme du mouvement politique de Steven Blasi : éducation, santé, économie locale, transition écologique et démocratie." },
+      {
+        name: "description",
+        content:
+          "Le programme du mouvement politique de Steven Blasi : éducation, santé, économie locale, transition écologique et démocratie.",
+      },
       { property: "og:title", content: "Programme du mouvement — Steven Blasi" },
-      { property: "og:description", content: "Éducation, santé, économie locale, écologie et démocratie : les grandes orientations du mouvement." },
+      {
+        property: "og:description",
+        content:
+          "Éducation, santé, économie locale, écologie et démocratie : les grandes orientations du mouvement.",
+      },
       { property: "og:type", content: "website" },
     ],
   }),
@@ -49,18 +73,26 @@ const AXES = [
 ];
 
 function ProgrammePage() {
+  const page = useContentPage("parti-politique/programme", FALLBACK).data ?? FALLBACK;
+  // Map stored body lines onto the icon axes when available; otherwise use the static axes.
+  const axes =
+    page.body.length > 0
+      ? AXES.map((axe, i) => ({
+          ...axe,
+          title: axe.title,
+          text: page.body[i] ?? axe.text,
+        }))
+      : AXES;
+
   return (
     <div className="container-site py-14 md:py-20">
       <div className="max-w-3xl">
-        <h2 className="heading-hero text-3xl md:text-4xl">Le programme</h2>
-        <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-          Six grandes orientations guident notre action. Le programme détaillé, mesure par
-          mesure, sera publié ici — voici déjà les fondations.
-        </p>
+        <h2 className="heading-hero text-3xl md:text-4xl">{page.title}</h2>
+        <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{page.intro}</p>
       </div>
 
       <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {AXES.map((axe) => (
+        {axes.map((axe) => (
           <div key={axe.title} className="card-hover rounded-xl border bg-card p-6">
             <axe.icon className="h-7 w-7 text-primary" />
             <h3 className="font-display mt-4 text-xl font-semibold">{axe.title}</h3>
