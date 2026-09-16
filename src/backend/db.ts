@@ -1,6 +1,4 @@
-import { promises as fs } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { Pool } from "pg";
 import type {
   BlogPost,
   ManagedBook,
@@ -12,10 +10,7 @@ import type {
 
 export type { BlogPost, ManagedBook, PageContent, HomePageContent, PageSettings, AdminConfig };
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = join(__dirname, "..", "..", "data");
-
-interface DatabaseShape {
+export interface DatabaseShape {
   posts: BlogPost[];
   books: ManagedBook[];
   aboutPage: PageContent;
@@ -35,7 +30,7 @@ const SEED_ADMIN: AdminConfig = {
     "37df1c284fc49cc69335bdcf408a6a4916a776708acb0436c42c4aebcb62e1a76ea6d0adc18dc42e9cfc1c0e3b7aad87f8d7b00e786635bbef9b1dc5ed9d3166",
 };
 
-const SEED: DatabaseShape = {
+export const SEED: DatabaseShape = {
   posts: [
     {
       slug: "bienvenue-sur-le-site",
@@ -145,44 +140,62 @@ const SEED: DatabaseShape = {
   admin: SEED_ADMIN,
 };
 
-let cache: DatabaseShape | null = null;
-let writePromise: Promise<void> | null = null;
+// Connexion PostgreSQL — réutilisée (pool) pour toute la durée de vie du serveur.
+// La variable DATABASE_URL est fournie par l'hébergeur (Render, Railway, etc.).
+let pool: Pool | null = null;
 
-async function ensureDir(): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-}
-
-async function readFile(): Promise<DatabaseShape | null> {
-  try {
-    const raw = await fs.readFile(join(DATA_DIR, "db.json"), "utf-8");
-    return JSON.parse(raw) as DatabaseShape;
-  } catch {
-    return null;
+function getPool(): Pool {
+  if (!pool) {
+    const connectionString = process.env.DATABASE_URL;
+    if (!connectionString) {
+      throw new Error(
+        "DATABASE_URL n'est pas défini. Configurez la variable d'environnement DATABASE_URL (URL PostgreSQL).",
+      );
+    }
+    pool = new Pool({
+      connectionString,
+      // Render / Neon / Supabase utilisent ssl ; on l'active par défaut en production.
+      ssl: process.env.NODE_ENV === "production" ? { rejectUnauthorized: false } : undefined,
+      max: 5,
+    });
   }
+  return pool;
 }
+
+const STATE_KEY = "main";
 
 export async function loadDb(): Promise<DatabaseShape> {
-  if (cache) return cache;
-  await ensureDir();
-  const existing = await readFile();
-  if (existing) {
-    // Merge with seed to backfill any new fields added later.
-    cache = { ...SEED, ...existing, admin: SEED_ADMIN };
-    return cache;
+  const client = await getPool().connect();
+  try {
+    const res = await client.query("SELECT data FROM app_state WHERE key = $1", [STATE_KEY]);
+    if (res.rows.length > 0) {
+      const stored = res.rows[0].data as Partial<DatabaseShape>;
+      // Fusionne avec le seed pour backfill les champs ajoutés ultérieurement,
+      // et force l'admin seed (identifiants gérés côté code, jamais éditables via la console).
+      return { ...SEED, ...stored, admin: SEED_ADMIN };
+    }
+    // Première exécution : on persiste le seed.
+    await client.query(
+      "INSERT INTO app_state (key, data) VALUES ($1, $2) ON CONFLICT (key) DO NOTHING",
+      [STATE_KEY, SEED],
+    );
+    return SEED;
+  } finally {
+    client.release();
   }
-  await writeDb(SEED);
-  return SEED;
 }
 
-// Coalesce concurrent writes so they never interleave/corrupt the JSON file.
-export function writeDb(next: DatabaseShape): Promise<void> {
-  cache = next;
-  const run = async () => {
-    await ensureDir();
-    await fs.writeFile(join(DATA_DIR, "db.json"), JSON.stringify(next, null, 2), "utf-8");
-  };
-  writePromise = writePromise ? writePromise.then(run, run) : run();
-  return writePromise;
+export async function writeDb(next: DatabaseShape): Promise<void> {
+  const client = await getPool().connect();
+  try {
+    await client.query(
+      `INSERT INTO app_state (key, data) VALUES ($1, $2)
+       ON CONFLICT (key) DO UPDATE SET data = EXCLUDED.data, updated_at = NOW()`,
+      [STATE_KEY, { ...next, admin: SEED_ADMIN }],
+    );
+  } finally {
+    client.release();
+  }
 }
 
 export async function updateDb(
