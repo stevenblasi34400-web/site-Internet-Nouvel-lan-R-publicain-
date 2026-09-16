@@ -1,0 +1,32 @@
+# Configuration Render Blueprint — déploiement en 1 clic
+# Docs : https://render.com/docs/blueprint-spec
+# Après avoir connecté ce dépôt à Render, ce fichier crée automatiquement :
+#   - un Web Service (le site Node)
+#   - une base PostgreSQL
+# Chaque service a une offre gratuite au démarrage.
+
+databases:
+  - name: stevenblasi-db
+    databaseName: stevenblasi
+    plan: free
+    ipAllowList: []
+
+services:
+  - type: web
+    name: stevenblasi-site
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: npm install && npm run build
+    startCommand: node .output/server/index.mjs
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_URL
+        fromDatabase:
+          name: stevenblasi-db
+          property: connectionString
+      - key: DB_MIGRATE_ON_BUILD
+        value: "true"

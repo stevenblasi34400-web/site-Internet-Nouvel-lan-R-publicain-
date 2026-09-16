@@ -19,15 +19,29 @@ npm install
 npm run dev
 ```
 
+## Base de données
+
+Le site utilise **PostgreSQL** pour la persistance (articles, livres, pages, réglages). La connexion se fait via la variable d'environnement `DATABASE_URL`.
+
+Initialiser la base (crée la table `app_state` et le contenu de démarrage) :
+
+```sh
+npm run db:migrate
+```
+
 ## Build et hébergement
 
 Le serveur de production est généré par Nitro. Par défaut, le build cible un serveur Node standard (`node-server`), compatible avec n'importe quel hébergeur supportant Node.js (OVH, Infomaniak, etc.).
 
 ```sh
 npm run build      # génère .output/server/index.mjs
-node .output/server/index.mjs   # démarre le serveur de production
+npm start          # démarre le serveur de production (node .output/server/index.mjs)
 ```
 
 Le port s'adapte automatiquement à la variable d'environnement `PORT` de l'hébergeur.
 
 Pour cibler un autre runtime, surchargez le preset Nitro via la variable d'environnement `NITRO_PRESET` (par ex. `NITRO_PRESET=bun`, `NITRO_PRESET=vercel`, etc.).
+
+### Déploiement Render (gratuit) + PostgreSQL
+
+Voir [DEPLOY.md](./DEPLOY.md) pour le déploiement en 1 clic sur Render avec une base PostgreSQL. Le fichier `render.yaml` configure automatiquement le web service et la base de données.

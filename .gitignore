@@ -20,8 +20,8 @@ dist-ssr
 .wrangler/
 .dev.vars
 
-# Données locales de la console admin (persistance JSON serveur)
-data/db.json
+# Données locales de la console admin (stockées en base PostgreSQL)
+.env
 
 # Editor directories and files
 .vscode/*
