@@ -11,9 +11,16 @@ export const Route = createFileRoute("/parti-politique/rejoindre")({
   head: () => ({
     meta: [
       { title: "Rejoindre le mouvement — Steven Blasi" },
-      { name: "description", content: "Adhérez au mouvement politique de Steven Blasi : participez aux réunions, aux débats et à la construction du programme." },
+      {
+        name: "description",
+        content:
+          "Adhérez au mouvement politique de Steven Blasi : participez aux réunions, aux débats et à la construction du programme.",
+      },
       { property: "og:title", content: "Rejoindre le mouvement — Steven Blasi" },
-      { property: "og:description", content: "Adhérez au mouvement et participez à la construction du programme." },
+      {
+        property: "og:description",
+        content: "Adhérez au mouvement et participez à la construction du programme.",
+      },
       { property: "og:type", content: "website" },
     ],
   }),
@@ -26,7 +33,7 @@ function RejoindrePage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: connecter le stockage des adhésions (Lovable Cloud)
+    // TODO: connecter le stockage des adhésions
     await new Promise((r) => setTimeout(r, 700));
     setLoading(false);
     (e.target as HTMLFormElement).reset();
@@ -39,8 +46,8 @@ function RejoindrePage() {
         <div>
           <h2 className="heading-hero text-3xl md:text-4xl">Nous rejoindre</h2>
           <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-            Un mouvement n'est rien sans celles et ceux qui le font vivre. En adhérant,
-            vous participez aux réunions, aux débats et à l'écriture du programme.
+            Un mouvement n'est rien sans celles et ceux qui le font vivre. En adhérant, vous
+            participez aux réunions, aux débats et à l'écriture du programme.
           </p>
 
           <ul className="mt-8 space-y-4">
@@ -84,7 +91,11 @@ function RejoindrePage() {
               <Textarea id="motivation" name="motivation" rows={4} className="bg-background/60" />
             </div>
             <Button type="submit" size="lg" disabled={loading} className="w-full">
-              {loading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
+              {loading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="mr-2 h-4 w-4" />
+              )}
               Envoyer ma demande d'adhésion
             </Button>
           </form>

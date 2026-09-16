@@ -1,15 +1,33 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Feather, Landmark } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useContentPage } from "@/hooks/useContent";
 import authorImg from "@/assets/author.jpg";
+
+const FALLBACK = {
+  id: "a-propos",
+  title: "Steven Blasi",
+  intro:
+    "Écrivain, essayiste et homme engagé. Depuis mes premiers textes, je poursuis une même conviction : les mots peuvent déplacer les lignes. Mes livres explorent la société telle qu'elle est — et telle qu'elle pourrait être.",
+  body: [
+    "Cette page raconte bientôt mon histoire complète : mes débuts, mes rencontres, mes livres et ce qui m'a conduit à fonder un mouvement politique.",
+    "En attendant, explorez ma bibliographie et mes actualités — et n'hésitez pas à m'écrire.",
+  ],
+};
 
 export const Route = createFileRoute("/a-propos")({
   head: () => ({
     meta: [
       { title: "À propos de Steven Blasi — Écrivain" },
-      { name: "description", content: "Qui est Steven Blasi ? Parcours, bibliographie et engagement de l'écrivain." },
+      {
+        name: "description",
+        content: "Qui est Steven Blasi ? Parcours, bibliographie et engagement de l'écrivain.",
+      },
       { property: "og:title", content: "À propos de Steven Blasi — Écrivain" },
-      { property: "og:description", content: "Parcours, bibliographie et engagement de l'écrivain Steven Blasi." },
+      {
+        property: "og:description",
+        content: "Parcours, bibliographie et engagement de l'écrivain Steven Blasi.",
+      },
       { property: "og:type", content: "profile" },
     ],
   }),
@@ -17,6 +35,8 @@ export const Route = createFileRoute("/a-propos")({
 });
 
 function AboutPage() {
+  const page = useContentPage("a-propos", FALLBACK).data ?? FALLBACK;
+
   return (
     <div className="container-site py-14 md:py-20">
       <div className="grid items-start gap-12 md:grid-cols-[1fr_1.4fr]">
@@ -33,12 +53,8 @@ function AboutPage() {
 
         <div>
           <p className="kicker">À propos</p>
-          <h1 className="heading-hero mt-3 text-4xl md:text-6xl">Steven Blasi</h1>
-          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">
-            Écrivain, essayiste et homme engagé. Depuis mes premiers textes, je poursuis
-            une même conviction : les mots peuvent déplacer les lignes. Mes livres explorent
-            la société telle qu'elle est — et telle qu'elle pourrait être.
-          </p>
+          <h1 className="heading-hero mt-3 text-4xl md:text-6xl">{page.title}</h1>
+          <p className="mt-6 text-lg leading-relaxed text-muted-foreground">{page.intro}</p>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-3">
             <div className="card-hover rounded-xl border bg-card p-5">
@@ -64,12 +80,16 @@ function AboutPage() {
             </div>
           </div>
 
-          <h2 className="font-display mt-12 text-2xl font-bold">Le parcours</h2>
-          <p className="mt-4 leading-relaxed text-muted-foreground">
-            Cette page raconte bientôt mon histoire complète : mes débuts, mes rencontres,
-            mes livres et ce qui m'a conduit à fonder un mouvement politique. En attendant,
-            explorez ma bibliographie et mes actualités — et n'hésitez pas à m'écrire.
-          </p>
+          {page.body.length > 0 && (
+            <>
+              <h2 className="font-display mt-12 text-2xl font-bold">Le parcours</h2>
+              <div className="mt-4 space-y-4 leading-relaxed text-muted-foreground">
+                {page.body.map((p, i) => (
+                  <p key={i}>{p}</p>
+                ))}
+              </div>
+            </>
+          )}
 
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild>

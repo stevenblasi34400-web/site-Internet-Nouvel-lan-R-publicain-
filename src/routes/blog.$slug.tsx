@@ -1,10 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, CalendarDays } from "lucide-react";
 import { BLOG_POSTS } from "@/data/posts";
+import { getPublicPost } from "@/backend/admin.functions";
 import { NewsletterForm } from "@/components/NewsletterForm";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
+    // Try the managed store first, fall back to the seeded static posts.
+    try {
+      const managed = await getPublicPost({ data: { slug: params.slug } });
+      if (managed) return { post: managed };
+    } catch {
+      // ignore server errors and fall through to static data
+    }
     const post = BLOG_POSTS.find((p) => p.slug === params.slug);
     if (!post) throw notFound();
     return { post };
@@ -49,7 +57,10 @@ function BlogPostPage() {
 
         <div className="mt-10 space-y-6">
           {post.content.map((paragraph, i) => (
-            <p key={i} className="text-lg leading-relaxed text-muted-foreground first:text-foreground">
+            <p
+              key={i}
+              className="text-lg leading-relaxed text-muted-foreground first:text-foreground"
+            >
               {paragraph}
             </p>
           ))}
