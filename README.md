@@ -1,24 +1,33 @@
-# My Creative Hub
+# Steven Blasi — Site officiel
 
-Je veux développer un site internet pour mettre en avant tous mes livres que j’ai écrit ainsi que les vendre. Je veux un site où je peux mettre en avant tout ce que je fais etc. je veux un site complet et fonctionnel..
+Site de l'auteur Steven Blasi : livres, actualités, engagement politique et contact. Projet construit avec TanStack Start (SSR), TanStack Router, React Query et Tailwind CSS.
 
-This project was built with [Lovable](https://lovable.dev).
+## Console administrateur
 
-## Build with Lovable
+Une console d'administration (`/admin`) permet de gérer l'intégralité du site sans modifier le code : articles du blog, livres, pages (accueil, à propos, parti politique, programme, contact) et réglages globaux.
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/2519ab20-5870-476c-97fe-67eb3ecf8ee3).
+Connexion réservée au super administrateur.
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+## Développement
 
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Vous avez besoin de Node.js et npm — [installez-les avec nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
 git clone <this-repository-url>
 cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+## Build et hébergement
+
+Le serveur de production est généré par Nitro. Par défaut, le build cible un serveur Node standard (`node-server`), compatible avec n'importe quel hébergeur supportant Node.js (OVH, Infomaniak, etc.).
+
+```sh
+npm run build      # génère .output/server/index.mjs
+node .output/server/index.mjs   # démarre le serveur de production
+```
+
+Le port s'adapte automatiquement à la variable d'environnement `PORT` de l'hébergeur.
+
+Pour cibler un autre runtime, surchargez le preset Nitro via la variable d'environnement `NITRO_PRESET` (par ex. `NITRO_PRESET=bun`, `NITRO_PRESET=vercel`, etc.).

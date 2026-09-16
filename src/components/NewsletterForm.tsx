@@ -15,7 +15,7 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
       return;
     }
     setLoading(true);
-    // TODO: connecter un service d'envoi (Lovable Cloud) pour stocker les inscrits
+    // TODO: connecter un service d'envoi pour stocker les inscrits
     await new Promise((r) => setTimeout(r, 600));
     setLoading(false);
     setEmail("");
@@ -23,7 +23,10 @@ export function NewsletterForm({ compact = false }: { compact?: boolean }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={compact ? "flex gap-2" : "mx-auto flex max-w-md gap-2"}>
+    <form
+      onSubmit={handleSubmit}
+      className={compact ? "flex gap-2" : "mx-auto flex max-w-md gap-2"}
+    >
       <Input
         type="email"
         required
