@@ -123,9 +123,11 @@ export async function fetchProducts(first = 20): Promise<ShopifyProduct[]> {
   return (data?.data?.products?.edges ?? []) as ShopifyProduct[];
 }
 
-export async function fetchProductByHandle(handle: string) {
+export async function fetchProductByHandle(
+  handle: string,
+): Promise<ShopifyProduct["node"] | null> {
   const data = await storefrontApiRequest(PRODUCT_BY_HANDLE_QUERY, { handle });
-  return data?.data?.productByHandle ?? null;
+  return (data?.data?.productByHandle ?? null) as ShopifyProduct["node"] | null;
 }
 
 export function formatPrice(amount: string, currencyCode: string): string {
